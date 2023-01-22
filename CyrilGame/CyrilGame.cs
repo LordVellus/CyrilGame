@@ -52,7 +52,7 @@ namespace CyrilGame
 
             m_defaultFont.LoadContent( Content );
 
-            var activeWindow = new ActiveWindow( "New Window", newPos, windowWidth, windowHeight );
+            var activeWindow = new ActiveWindow( "Form 1", newPos, windowWidth, windowHeight );
             activeWindow.Font = m_defaultFont;
             EditorGuiManager.Instance.AddGui( activeWindow, Content );
         }
