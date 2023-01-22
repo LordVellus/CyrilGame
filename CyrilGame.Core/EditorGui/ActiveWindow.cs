@@ -8,8 +8,8 @@ namespace CyrilGame.Core.EditorGui
 {
     public class ActiveWindow : EditorGuiBase
     {
-        public ActiveWindow( Vector2 InPosition, uint InWidth, uint InHeight ) 
-            : base( InPosition, InWidth, InHeight )
+        public ActiveWindow( string InTitle, Vector2 InPosition, uint InWidth, uint InHeight ) 
+            : base( InTitle, InPosition, InWidth, InHeight )
         {
         }
 
@@ -31,6 +31,10 @@ namespace CyrilGame.Core.EditorGui
         }
 
         bool bIsDragging = false;
+        Vector2 m_prevMousePos = Vector2.Zero;
+
+        float m_XDistance;
+        float m_YDistance;
 
         public override void Update( GameTime InGameTime, MouseState InMouseState )
         {
@@ -48,18 +52,33 @@ namespace CyrilGame.Core.EditorGui
 
             if ( !bIsDragging && mouseIsOnHeader && InMouseState.LeftButton == ButtonState.Pressed )
             {
+                m_XDistance =  Vector2.Distance( new Vector2( topLeftRect.X, 0 ), new Vector2( mousePosition.X, 0 ) );
+                m_YDistance =  Vector2.Distance( new Vector2( 0, topLeftRect.Y ), new Vector2( 0, mousePosition.Y ) );
+
                 bIsDragging = true;
             }
 
             if ( bIsDragging && InMouseState.LeftButton == ButtonState.Pressed )
             {
-                Position = mousePosition - Position;
+                Position = new Vector2( mousePosition.X - m_XDistance, mousePosition.Y - m_YDistance );
+
+                //var mouseVector = mousePosition - m_prevMousePos;
+
+                //if( mouseVector != Vector2.Zero )
+                //{
+                //    mouseVector.Normalize();
+
+                //    const float MoveSpeed = 10f;
+                //    Position += mouseVector * MoveSpeed;
+                //}
             }
 
             if ( bIsDragging && InMouseState.LeftButton == ButtonState.Released )
             {
                 bIsDragging = false;
             }
+
+            m_prevMousePos = mousePosition;
         }
     }
 }

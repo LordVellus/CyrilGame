@@ -6,19 +6,101 @@ using System.Diagnostics;
 
 namespace CyrilGame.Core.EditorGui
 {
-    public abstract class EditorGuiBase
+    public class SpriteSheetFont
     {
+        protected uint Rows;
+        protected uint Cols;
+        protected uint CharHeight;
+        protected uint CharWidth;
+        protected Texture2D? m_Texture = null;
+
+        protected string[,] m_Characters = { };
+
+        public virtual void LoadContent( ContentManager InContent ) { }
+
+        public void DrawString( SpriteBatch InSpriteBatch, string InString, Vector2 InPosition )
+        {
+            var position = InPosition;
+
+            foreach( var character in InString )
+            {
+                var characterIndex = GetCharacterIndex( character.ToString() );
+
+                if( characterIndex.X >= 0 && characterIndex.Y >= 0 )
+                {
+                    var sourceRect = new Rectangle();
+                    sourceRect.X = (int) characterIndex.Y * (int)CharWidth;
+                    sourceRect.Y = (int)characterIndex.X * (int)CharHeight;
+                    sourceRect.Width = (int)CharWidth;
+                    sourceRect.Height = (int)CharHeight;
+
+                    InSpriteBatch.Draw( m_Texture, new Rectangle( ( int ) position.X, ( int ) position.Y, (int)CharWidth, (int)CharHeight ), sourceRect, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+                }
+
+                position.X += CharWidth;
+            }
+        }
+
+        public Vector2 GetCharacterIndex( string character )
+        {
+            for ( int i = 0; i < Rows; i++ )
+            {
+                for( int k = 0; k < Cols; k++ ) 
+                {
+                    if( m_Characters[ i, k ] == character )
+                    {
+                        return new Vector2( i, k );
+                    }
+                }
+            }
+
+            return new Vector2( -1, -1 );
+        }
+    }
+
+    public class DefaultFont : SpriteSheetFont 
+    {
+        public DefaultFont()
+        {
+            Rows = 6;
+            Cols = 16;
+            CharHeight = 12;
+            CharWidth = 8;
+
+            m_Characters = new string[ 6, 16 ] 
+            { 
+                { " ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/" },
+                { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?" },
+                { "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O" },
+                { "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_" },
+                { "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o" },
+                { "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", "" } };
+        }
+
+        public override void LoadContent( ContentManager InContent )
+        {
+            m_Texture = InContent.Load<Texture2D>( @"fonts\font" );
+        }
+
+}
+
+public abstract class EditorGuiBase
+    {
+        public SpriteSheetFont Font { get; set; } = null;
+
         public Vector2 Position { get; protected set; }
         public Guid Id { get; private set;}
 
         protected Texture2D? m_texture = null;
         protected uint m_width;
         protected uint m_Height;
+        protected string m_Title;
 
         protected Rectangle m_Header = new Rectangle();
 
-        public EditorGuiBase( Vector2 InPosition, uint InWidth, uint InHeight )
+        public EditorGuiBase( string InTitle, Vector2 InPosition, uint InWidth, uint InHeight )
         {
+            m_Title = InTitle;
             Position = InPosition;
             m_width = InWidth;
             m_Height = InHeight;
@@ -34,6 +116,7 @@ namespace CyrilGame.Core.EditorGui
             Debug.Assert( m_texture != null );
             Debug.Assert( m_width >= m_texture.Width );
             Debug.Assert( m_Height >= m_texture.Height );
+            Debug.Assert( Font != null );
 
             var position = Position;
 
@@ -43,6 +126,9 @@ namespace CyrilGame.Core.EditorGui
 
             m_Header.X = ( int ) position.X;
             m_Header.Y = ( int ) position.Y;
+
+            var headerPadding = new Vector2( 3, 6 );
+            var titlePos = position + headerPadding;
 
             //  Top middle slices
             var topMiddleSlice = Slices[ SlicePart.TopMiddle ];
@@ -112,6 +198,7 @@ namespace CyrilGame.Core.EditorGui
             //  Draw bottom right slice
             Draw( InSpriteBatch, ref position, bottomRightSlice );
 
+            Font.DrawString( InSpriteBatch, m_Title, titlePos );
 
             ////if ( m_width > m_texture.Width )
             //{

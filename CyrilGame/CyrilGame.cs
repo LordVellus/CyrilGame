@@ -17,6 +17,8 @@ namespace CyrilGame
         Vector2 m_ballPosition;
         float m_ballSpeed;
 
+        DefaultFont m_defaultFont = new DefaultFont();
+
         public CyrilGame()
         {
             _graphics = new GraphicsDeviceManager( this );
@@ -48,7 +50,11 @@ namespace CyrilGame
 
             var newPos = new Vector2( 40, 40 );
 
-            EditorGuiManager.Instance.AddGui( new ActiveWindow( newPos, windowWidth, windowHeight ), Content );
+            m_defaultFont.LoadContent( Content );
+
+            var activeWindow = new ActiveWindow( "New Window", newPos, windowWidth, windowHeight );
+            activeWindow.Font = m_defaultFont;
+            EditorGuiManager.Instance.AddGui( activeWindow, Content );
         }
 
         protected override void Update( GameTime gameTime )
@@ -69,8 +75,10 @@ namespace CyrilGame
             GraphicsDevice.Clear( Color.CornflowerBlue );
             
             _spriteBatch.Begin();
-            
-            if( m_projectCollection.IsBrandNewProject() )
+
+            m_defaultFont.DrawString( _spriteBatch, "Welcome to my game", new Vector2( 0, 0 ) );
+
+            if ( m_projectCollection.IsBrandNewProject() )
             {
                 EditorGuiManager.Instance.Draw( _spriteBatch );
             }
