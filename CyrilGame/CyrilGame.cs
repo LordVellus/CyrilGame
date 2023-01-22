@@ -1,4 +1,5 @@
-﻿using CyrilGame.Core.Projects;
+﻿using CyrilGame.Core.EditorGui;
+using CyrilGame.Core.Projects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -40,6 +41,11 @@ namespace CyrilGame
             // TODO: use this.Content to load your game content here
 
             m_ballTexture = Content.Load<Texture2D>( @"BallExample\ball" );
+
+            var windowWidth =  150U;
+            var middleOfScreen = new Vector2( _graphics.PreferredBackBufferWidth / 2 - windowWidth / 2, _graphics.PreferredBackBufferHeight / 2 );
+
+            EditorGuiManager.Instance.AddGui( new ActiveWindow( middleOfScreen, windowWidth, 48 ), Content );
         }
 
         protected override void Update( GameTime gameTime )
@@ -47,7 +53,10 @@ namespace CyrilGame
             if ( GamePad.GetState( PlayerIndex.One ).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown( Keys.Escape ) )
                 Exit();
 
+
             // TODO: Add your update logic here
+
+            EditorGuiManager.Instance.Update( gameTime, Mouse.GetState() );
 
             base.Update( gameTime );
         }
@@ -55,27 +64,30 @@ namespace CyrilGame
         protected override void Draw( GameTime gameTime )
         {
             GraphicsDevice.Clear( Color.CornflowerBlue );
-
+            
+            _spriteBatch.Begin();
+            
             if( m_projectCollection.IsBrandNewProject() )
             {
-                return;
+                EditorGuiManager.Instance.Draw( _spriteBatch );
+            }
+            else
+            {
+                _spriteBatch.Draw
+                ( 
+                    m_ballTexture, 
+                    m_ballPosition,
+                    null,
+                    Color.White,
+                    0f,
+                    new Vector2( m_ballTexture.Width / 2, m_ballTexture.Height / 2),
+                    Vector2.One,
+                    SpriteEffects.None,
+                    0f
+                );
             }
 
             // TODO: Add your drawing code here
-
-            _spriteBatch.Begin();
-            _spriteBatch.Draw
-            ( 
-                m_ballTexture, 
-                m_ballPosition,
-                null,
-                Color.White,
-                0f,
-                new Vector2( m_ballTexture.Width / 2, m_ballTexture.Height / 2),
-                Vector2.One,
-                SpriteEffects.None,
-                0f
-            );
             _spriteBatch.End();
 
             base.Draw( gameTime );

@@ -10,4 +10,8 @@
     <Folder Include="Projects\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
+  </ItemGroup>
+
 </Project>
