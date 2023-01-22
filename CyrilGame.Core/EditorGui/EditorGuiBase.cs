@@ -15,6 +15,7 @@ namespace CyrilGame.Core.EditorGui
         protected Texture2D? m_Texture = null;
 
         protected string[,] m_Characters = { };
+        protected Dictionary< string, int > m_FontDef = new Dictionary<string, int>();
 
         public virtual void LoadContent( ContentManager InContent ) { }
 
@@ -24,20 +25,26 @@ namespace CyrilGame.Core.EditorGui
 
             foreach( var character in InString )
             {
+                var ascii = (int)character;
+
+                var top = ( ascii - 32 ) / 16 * 12;
+
+                var left = ( ascii - 32 ) % 16 * 8;
+
+                var realCharacterWidth = m_FontDef[ character.ToString() ];
+
                 var characterIndex = GetCharacterIndex( character.ToString() );
 
-                if( characterIndex.X >= 0 && characterIndex.Y >= 0 )
-                {
-                    var sourceRect = new Rectangle();
-                    sourceRect.X = (int) characterIndex.Y * (int)CharWidth;
-                    sourceRect.Y = (int)characterIndex.X * (int)CharHeight;
-                    sourceRect.Width = (int)CharWidth;
-                    sourceRect.Height = (int)CharHeight;
 
-                    InSpriteBatch.Draw( m_Texture, new Rectangle( ( int ) position.X, ( int ) position.Y, (int)CharWidth, (int)CharHeight ), sourceRect, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
-                }
+                var sourceRect = new Rectangle();
+                sourceRect.X = ( int ) characterIndex.Y * ( int ) CharWidth;
+                sourceRect.Y = ( int ) characterIndex.X * ( int ) CharHeight;
+                sourceRect.Width = ( int ) realCharacterWidth;
+                sourceRect.Height = ( int ) CharHeight;
 
-                position.X += CharWidth;
+                InSpriteBatch.Draw( m_Texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) realCharacterWidth, ( int ) CharHeight ), sourceRect, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+
+                position.X += realCharacterWidth;
             }
         }
 
@@ -80,13 +87,24 @@ namespace CyrilGame.Core.EditorGui
         public override void LoadContent( ContentManager InContent )
         {
             m_Texture = InContent.Load<Texture2D>( @"fonts\font" );
+
+            var fontDef = File.ReadAllText( @"Config\fontdef.txt" );
+
+            var lines = fontDef.Split( Environment.NewLine );
+
+            foreach(var line in lines ) 
+            {
+                var splitLine = line.Split( "[SEP]" );
+
+                m_FontDef.Add( splitLine[ 0 ], int.Parse( splitLine[ 1 ] ) );
+            }
         }
 
 }
 
 public abstract class EditorGuiBase
     {
-        public SpriteSheetFont Font { get; set; } = null;
+        public SpriteSheetFont? Font { get; set; } = null;
 
         public Vector2 Position { get; protected set; }
         public Guid Id { get; private set;}

@@ -45,14 +45,14 @@ namespace CyrilGame
             m_ballTexture = Content.Load<Texture2D>( @"BallExample\ball" );
 
             var windowWidth =  300U;
-            var windowHeight = 300U;
-            var middleOfScreen = new Vector2( _graphics.PreferredBackBufferWidth / 2 - windowWidth / 2, _graphics.PreferredBackBufferHeight / 2 );
+            var windowHeight = 150U;
+            var middleOfScreen = new Vector2( _graphics.PreferredBackBufferWidth / 2 - windowWidth / 2, _graphics.PreferredBackBufferHeight / 2 - windowHeight / 2 );
 
             var newPos = new Vector2( 40, 40 );
 
             m_defaultFont.LoadContent( Content );
 
-            var activeWindow = new ActiveWindow( "Form 1", newPos, windowWidth, windowHeight );
+            var activeWindow = new ActiveWindow( "Brand New Game", middleOfScreen, windowWidth, windowHeight );
             activeWindow.Font = m_defaultFont;
             EditorGuiManager.Instance.AddGui( activeWindow, Content );
         }
