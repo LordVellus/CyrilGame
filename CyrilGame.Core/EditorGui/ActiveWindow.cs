@@ -30,7 +30,7 @@ namespace CyrilGame.Core.EditorGui
             Slices.Add( SlicePart.BottomRight, new Rectangle( 32, 44, 16, 4 ) );
         }
 
-        //bool bIsDragging = false;
+        bool bIsDragging = false;
 
         public override void Update( GameTime InGameTime, MouseState InMouseState )
         {
@@ -40,24 +40,26 @@ namespace CyrilGame.Core.EditorGui
             var topMiddleRect = Slices[ SlicePart.TopMiddle ].AddVector( Position ); ;
             var topRightRect = Slices[ SlicePart.TopRight ].AddVector( Position ); ;
 
-            var mouseIsOnHeader = topLeftRect.Contains( InMouseState.X, InMouseState.Y ) 
-                || topMiddleRect.Contains( InMouseState.X, InMouseState.Y )
-                || topRightRect.Contains( InMouseState.X, InMouseState.Y );
+            var mouseIsOnHeader = m_Header.Contains( InMouseState.X, InMouseState.Y );
+                
+                //topLeftRect.Contains( InMouseState.X, InMouseState.Y ) 
+                //|| topMiddleRect.Contains( InMouseState.X, InMouseState.Y )
+                //|| topRightRect.Contains( InMouseState.X, InMouseState.Y );
 
-            //if( !bIsDragging && mouseIsOnHeader && InMouseState.LeftButton == ButtonState.Pressed )
-            //{
-            //    bIsDragging = true;
-            //}
+            if ( !bIsDragging && mouseIsOnHeader && InMouseState.LeftButton == ButtonState.Pressed )
+            {
+                bIsDragging = true;
+            }
 
-            //if( bIsDragging && InMouseState.LeftButton == ButtonState.Pressed )
-            //{
-            //    Position = mousePosition;
-            //}
+            if ( bIsDragging && InMouseState.LeftButton == ButtonState.Pressed )
+            {
+                Position = mousePosition - Position;
+            }
 
-            //if( bIsDragging && InMouseState.LeftButton == ButtonState.Released )
-            //{
-            //    bIsDragging = false;
-            //}
+            if ( bIsDragging && InMouseState.LeftButton == ButtonState.Released )
+            {
+                bIsDragging = false;
+            }
         }
     }
 }

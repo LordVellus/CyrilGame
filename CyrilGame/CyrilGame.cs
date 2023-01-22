@@ -42,10 +42,13 @@ namespace CyrilGame
 
             m_ballTexture = Content.Load<Texture2D>( @"BallExample\ball" );
 
-            var windowWidth =  150U;
+            var windowWidth =  300U;
+            var windowHeight = 300U;
             var middleOfScreen = new Vector2( _graphics.PreferredBackBufferWidth / 2 - windowWidth / 2, _graphics.PreferredBackBufferHeight / 2 );
 
-            EditorGuiManager.Instance.AddGui( new ActiveWindow( middleOfScreen, windowWidth, 48 ), Content );
+            var newPos = new Vector2( 40, 40 );
+
+            EditorGuiManager.Instance.AddGui( new ActiveWindow( newPos, windowWidth, windowHeight ), Content );
         }
 
         protected override void Update( GameTime gameTime )

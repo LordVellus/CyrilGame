@@ -8,12 +8,14 @@ namespace CyrilGame.Core.EditorGui
 {
     public abstract class EditorGuiBase
     {
-        public Vector2 Position { get; private set; }
+        public Vector2 Position { get; protected set; }
         public Guid Id { get; private set;}
 
         protected Texture2D? m_texture = null;
         protected uint m_width;
         protected uint m_Height;
+
+        protected Rectangle m_Header = new Rectangle();
 
         public EditorGuiBase( Vector2 InPosition, uint InWidth, uint InHeight )
         {
@@ -37,7 +39,10 @@ namespace CyrilGame.Core.EditorGui
 
             //  Top left slice
             var topLeftSlice = Slices[ SlicePart.TopLeft ];
-            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, topLeftSlice.Width, topLeftSlice.Height ), topLeftSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+            Draw( InSpriteBatch, ref position, topLeftSlice );
+
+            m_Header.X = ( int ) position.X;
+            m_Header.Y = ( int ) position.Y;
 
             //  Top middle slices
             var topMiddleSlice = Slices[ SlicePart.TopMiddle ];
@@ -46,30 +51,67 @@ namespace CyrilGame.Core.EditorGui
             //  Top right slice
             var topRightSlice = Slices[ SlicePart.TopRight ];
 
-            DrawRepeatingX( InSpriteBatch, ref position, topLeftSlice, topRightSlice, topMiddleSlice );
+            DrawRepeatingX( InSpriteBatch, ref position, topLeftSlice, topRightSlice, topMiddleSlice, ( uint ) topMiddleSlice.Height );
 
             //  Draw top right slice
-            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, topRightSlice.Width, topRightSlice.Height ), topRightSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+            Draw( InSpriteBatch, ref position, topRightSlice );
 
-            
+            m_Header.Width = ( int ) ( ( position.X + topMiddleSlice.Width ) - m_Header.X );
+            m_Header.Height = ( int ) ( ( position.Y + topMiddleSlice.Height ) - m_Header.Y );
 
-            //  Middle left slice
+            //  Middle slices
             var middleLeftSlice = Slices[ SlicePart.MiddleLeft ];
-            position = Position + new Vector2( middleLeftSlice.X, middleLeftSlice.Y );
-
-            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, middleLeftSlice.Width, middleLeftSlice.Height ), middleLeftSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
-
-            //  Top middle slices
             var middleMiddleSlice = Slices[ SlicePart.MiddleMiddle ];
-            position += new Vector2( middleMiddleSlice.X, 0 );
-
-            //  Top right slice
             var middleRightSlice = Slices[ SlicePart.MiddleRight ];
+            var bottomLeftSlice = Slices[ SlicePart.BottomLeft ];
 
-            DrawRepeatingX( InSpriteBatch, ref position, middleLeftSlice, middleRightSlice, middleMiddleSlice );
+            var remainingHeight = m_Height - ( uint ) topLeftSlice.Height - ( uint ) bottomLeftSlice.Height;
+            uint numberOfHeightSections = ( uint ) remainingHeight / (uint) middleLeftSlice.Height;
+            if ( ( numberOfHeightSections * middleLeftSlice.Height ) < ( uint ) middleLeftSlice.Height )
+            {
+                numberOfHeightSections++;
+            }
 
-            //  Draw middle right slice
-            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, middleRightSlice.Width, middleRightSlice.Height ), middleRightSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+            position = Position + new Vector2( middleLeftSlice.X, middleLeftSlice.Y );
+            var initialX = position.X;
+
+            for ( int  i = 0; i < numberOfHeightSections; i++ ) 
+            {
+                var nextSliceHeight = remainingHeight >= middleLeftSlice.Height ? ( uint )middleLeftSlice.Height : remainingHeight;
+
+                Draw( InSpriteBatch, ref position, middleLeftSlice, nextSliceHeight );
+
+
+                position += new Vector2( middleMiddleSlice.X, 0 );
+
+                DrawRepeatingX( InSpriteBatch, ref position, middleLeftSlice, middleRightSlice, middleMiddleSlice, nextSliceHeight );
+
+                //  Draw middle right slice
+                Draw( InSpriteBatch, ref position, middleRightSlice, nextSliceHeight );
+
+                position.Y += nextSliceHeight;
+                position.X = initialX;
+                remainingHeight -= nextSliceHeight;
+            }
+
+            position.X = initialX;
+
+            //  Bottom left slice
+            //position = position + new Vector2( bottomLeftSlice.X, bottomLeftSlice.Y );
+            Draw( InSpriteBatch, ref position, bottomLeftSlice );
+
+            //  Bottom middle slices
+            var bottomMiddleSlice = Slices[ SlicePart.BottomMiddle ];
+            position += new Vector2( bottomMiddleSlice.X, 0 );
+
+            //  Bottom right slice
+            var bottomRightSlice = Slices[ SlicePart.BottomRight ];
+
+            DrawRepeatingX( InSpriteBatch, ref position, bottomLeftSlice, bottomRightSlice, bottomMiddleSlice, ( uint ) bottomMiddleSlice.Height );
+
+            //  Draw bottom right slice
+            Draw( InSpriteBatch, ref position, bottomRightSlice );
+
 
             ////if ( m_width > m_texture.Width )
             //{
@@ -135,6 +177,13 @@ namespace CyrilGame.Core.EditorGui
             //}
         }
 
+        private void Draw( SpriteBatch InSpriteBatch, ref Vector2 InPosition, Rectangle InSlice, uint InHeight = 0 )
+        {
+            var height = InHeight == 0 ? ( uint ) InSlice.Height : InHeight;
+
+            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) InPosition.X, ( int ) InPosition.Y, InSlice.Width, ( int ) height ), InSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+        }
+
         public abstract void Update( GameTime InGameTime, MouseState InMouseState );
 
         protected enum SlicePart
@@ -161,7 +210,7 @@ namespace CyrilGame.Core.EditorGui
 
         protected Dictionary<SlicePart, Rectangle> Slices { get; set; } = new();
 
-        private void DrawRepeatingX( SpriteBatch InSpriteBatch, ref Vector2 position, Rectangle InLeftRectangle, Rectangle InRightRectangle, Rectangle InMiddleRectangle )
+        private void DrawRepeatingX( SpriteBatch InSpriteBatch, ref Vector2 position, Rectangle InLeftRectangle, Rectangle InRightRectangle, Rectangle InMiddleRectangle, uint InSliceHeight )
         {
             var remainingPixels = m_width - ( uint ) InLeftRectangle.Width - ( uint ) InRightRectangle.Width;
             var numberOfPanelsNeeded = remainingPixels / ( uint ) InMiddleRectangle.Width;
@@ -176,8 +225,6 @@ namespace CyrilGame.Core.EditorGui
                 numberOfPanelsNeeded = 1;
             }
 
-            //position.X += topMiddleSlice.Width;
-
             for ( uint i = 0; i < numberOfPanelsNeeded; i++ )
             {
                 var nextSliceWidth = remainingPixels >= ( uint ) InMiddleRectangle.Width  ? ( uint ) InMiddleRectangle.Width  : remainingPixels;
@@ -185,7 +232,7 @@ namespace CyrilGame.Core.EditorGui
 
                 var sourceRectangle = InMiddleRectangle;
                 sourceRectangle.Width = ( int ) nextSliceWidth;
-                InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) nextSliceWidth, InMiddleRectangle.Height ), sourceRectangle, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+                InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) nextSliceWidth, ( int ) InSliceHeight ), sourceRectangle, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
 
                 position.X += nextSliceWidth;
 
