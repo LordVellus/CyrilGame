@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using static CyrilGame.Core.EditorGui.GuiManager;
 
 namespace CyrilGame.Core.EditorGui
 {
@@ -13,9 +14,9 @@ namespace CyrilGame.Core.EditorGui
         protected uint CharHeight;
         protected uint CharWidth;
         protected Texture2D? m_Texture = null;
-
-        protected string[,] m_Characters = { };
         protected Dictionary< string, int > m_FontDef = new Dictionary<string, int>();
+
+        protected Rectangle Bounds = new Rectangle();
 
         public virtual void LoadContent( ContentManager InContent ) { }
 
@@ -33,12 +34,10 @@ namespace CyrilGame.Core.EditorGui
 
                 var realCharacterWidth = m_FontDef[ character.ToString() ];
 
-                var characterIndex = GetCharacterIndex( character.ToString() );
-
 
                 var sourceRect = new Rectangle();
-                sourceRect.X = ( int ) characterIndex.Y * ( int ) CharWidth;
-                sourceRect.Y = ( int ) characterIndex.X * ( int ) CharHeight;
+                sourceRect.X = ( int ) left;
+                sourceRect.Y = ( int ) top;
                 sourceRect.Width = ( int ) realCharacterWidth;
                 sourceRect.Height = ( int ) CharHeight;
 
@@ -46,22 +45,6 @@ namespace CyrilGame.Core.EditorGui
 
                 position.X += realCharacterWidth;
             }
-        }
-
-        public Vector2 GetCharacterIndex( string character )
-        {
-            for ( int i = 0; i < Rows; i++ )
-            {
-                for( int k = 0; k < Cols; k++ ) 
-                {
-                    if( m_Characters[ i, k ] == character )
-                    {
-                        return new Vector2( i, k );
-                    }
-                }
-            }
-
-            return new Vector2( -1, -1 );
         }
     }
 
@@ -73,15 +56,6 @@ namespace CyrilGame.Core.EditorGui
             Cols = 16;
             CharHeight = 12;
             CharWidth = 8;
-
-            m_Characters = new string[ 6, 16 ] 
-            { 
-                { " ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/" },
-                { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", ";", "<", "=", ">", "?" },
-                { "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O" },
-                { "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "[", "\\", "]", "^", "_" },
-                { "`", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o" },
-                { "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "|", "}", "~", "" } };
         }
 
         public override void LoadContent( ContentManager InContent )
@@ -102,23 +76,30 @@ namespace CyrilGame.Core.EditorGui
 
 }
 
-public abstract class EditorGuiBase
+public abstract class GuiBase
     {
+        public float DrawIndex = 0f;
+
+        public Rectangle Bounds { get { return m_Bounds; } }
         public SpriteSheetFont? Font { get; set; } = null;
 
         public Vector2 Position { get; protected set; }
+        public void SetPosition( Vector2 InPosition )
+        {
+            Position = InPosition;
+        }
         public Guid Id { get; private set;}
 
         protected Texture2D? m_texture = null;
         protected uint m_width;
         protected uint m_Height;
-        protected string m_Title;
 
         protected Rectangle m_Header = new Rectangle();
+        protected Rectangle m_Bounds = new Rectangle();
+        protected Vector2 m_HeaderStartPos = new Vector2();
 
-        public EditorGuiBase( string InTitle, Vector2 InPosition, uint InWidth, uint InHeight )
+        public GuiBase( Vector2 InPosition, uint InWidth, uint InHeight )
         {
-            m_Title = InTitle;
             Position = InPosition;
             m_width = InWidth;
             m_Height = InHeight;
@@ -142,11 +123,14 @@ public abstract class EditorGuiBase
             var topLeftSlice = Slices[ SlicePart.TopLeft ];
             Draw( InSpriteBatch, ref position, topLeftSlice );
 
+            m_HeaderStartPos.X = position.X + topLeftSlice.Width / 2;
+            m_HeaderStartPos.Y = position.Y + topLeftSlice.Height / 4;
+
             m_Header.X = ( int ) position.X;
             m_Header.Y = ( int ) position.Y;
 
-            var headerPadding = new Vector2( 3, 6 );
-            var titlePos = position + headerPadding;
+            m_Bounds.X = ( int ) position.X;
+            m_Bounds.Y = ( int ) position.Y;
 
             //  Top middle slices
             var topMiddleSlice = Slices[ SlicePart.TopMiddle ];
@@ -188,7 +172,7 @@ public abstract class EditorGuiBase
 
                 position += new Vector2( middleMiddleSlice.X, 0 );
 
-                DrawRepeatingX( InSpriteBatch, ref position, middleLeftSlice, middleRightSlice, middleMiddleSlice, nextSliceHeight );
+               DrawRepeatingX( InSpriteBatch, ref position, middleLeftSlice, middleRightSlice, middleMiddleSlice, nextSliceHeight );
 
                 //  Draw middle right slice
                 Draw( InSpriteBatch, ref position, middleRightSlice, nextSliceHeight );
@@ -216,7 +200,8 @@ public abstract class EditorGuiBase
             //  Draw bottom right slice
             Draw( InSpriteBatch, ref position, bottomRightSlice );
 
-            Font.DrawString( InSpriteBatch, m_Title, titlePos );
+            m_Bounds.Width = Math.Abs( (int)position.X + bottomRightSlice.Width - m_Bounds.X );
+            m_Bounds.Height = Math.Abs( (int)position.Y + bottomRightSlice.Height - m_Bounds.Y );
 
             ////if ( m_width > m_texture.Width )
             //{
@@ -286,10 +271,10 @@ public abstract class EditorGuiBase
         {
             var height = InHeight == 0 ? ( uint ) InSlice.Height : InHeight;
 
-            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) InPosition.X, ( int ) InPosition.Y, InSlice.Width, ( int ) height ), InSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+            InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) InPosition.X, ( int ) InPosition.Y, InSlice.Width, ( int ) height ), InSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, DrawIndex );
         }
 
-        public abstract void Update( GameTime InGameTime, MouseState InMouseState );
+        public abstract UpdateEvent Update( GameTime InGameTime, MouseState InMouseState, GraphicsDeviceManager InGraphicsDeviceManager );
 
         protected enum SlicePart
         {
@@ -337,7 +322,7 @@ public abstract class EditorGuiBase
 
                 var sourceRectangle = InMiddleRectangle;
                 sourceRectangle.Width = ( int ) nextSliceWidth;
-                InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) nextSliceWidth, ( int ) InSliceHeight ), sourceRectangle, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
+                InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) nextSliceWidth, ( int ) InSliceHeight ), sourceRectangle, Color.White, 0f, Vector2.One, SpriteEffects.None, DrawIndex );
 
                 position.X += nextSliceWidth;
 

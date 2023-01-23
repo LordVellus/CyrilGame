@@ -3,19 +3,30 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
+using static CyrilGame.Core.EditorGui.GuiManager;
 
 namespace CyrilGame.Core.EditorGui
 {
-    public class ActiveWindow : EditorGuiBase
+    public class ActiveWindow : GuiBase
     {
+        private string m_Title;
+        private Texture2D m_InactiveTexture;
+
+        private Texture2D m_DefaultTexture;
+
         public ActiveWindow( string InTitle, Vector2 InPosition, uint InWidth, uint InHeight ) 
-            : base( InTitle, InPosition, InWidth, InHeight )
+            : base( InPosition, InWidth, InHeight )
         {
+            m_Title = InTitle;
         }
 
         public override void Init( ContentManager InContent )
         {
             m_texture = InContent.Load< Texture2D >( @"editor\gui\Window_Header" );
+            m_DefaultTexture = m_texture;
+
+            m_InactiveTexture = InContent.Load< Texture2D >( @"editor\gui\Window_Header_Inactive" );
 
             Slices.Add( SlicePart.TopLeft, new Rectangle( 0, 0, 16, 32 ) );
             Slices.Add( SlicePart.TopMiddle, new Rectangle( 16, 0, 16, 32 ) );
@@ -31,12 +42,21 @@ namespace CyrilGame.Core.EditorGui
         }
 
         bool bIsDragging = false;
-        Vector2 m_prevMousePos = Vector2.Zero;
 
         float m_XDistance;
         float m_YDistance;
 
-        public override void Update( GameTime InGameTime, MouseState InMouseState )
+        public override void Draw( SpriteBatch InSpriteBatch )
+        {
+            base.Draw( InSpriteBatch );
+
+            var headerPadding = new Vector2( 3, 6 );
+            var titlePos = Position + headerPadding;
+
+            Font.DrawString( InSpriteBatch, m_Title, m_HeaderStartPos );
+        }
+
+        public override UpdateEvent Update( GameTime InGameTime, MouseState InMouseState, GraphicsDeviceManager InGraphicsDeviceManager )
         {
             var mousePosition = new Vector2( InMouseState.X, InMouseState.Y );
 
@@ -50,6 +70,20 @@ namespace CyrilGame.Core.EditorGui
                 //|| topMiddleRect.Contains( InMouseState.X, InMouseState.Y )
                 //|| topRightRect.Contains( InMouseState.X, InMouseState.Y );
 
+            if( !bIsDragging && InMouseState.LeftButton == ButtonState.Pressed && !m_Bounds.Contains( mousePosition ) )
+            {
+                m_texture = m_InactiveTexture;
+            }
+            else if( !bIsDragging && InMouseState.LeftButton == ButtonState.Pressed && m_Bounds.Contains( mousePosition ) )
+            {
+                m_texture = m_DefaultTexture;
+            }
+
+            if( InMouseState.LeftButton == ButtonState.Pressed )
+            {
+                Debug.WriteLine( $"LMB pressed" );
+            }
+
             if ( !bIsDragging && mouseIsOnHeader && InMouseState.LeftButton == ButtonState.Pressed )
             {
                 m_XDistance =  Vector2.Distance( new Vector2( topLeftRect.X, 0 ), new Vector2( mousePosition.X, 0 ) );
@@ -60,17 +94,31 @@ namespace CyrilGame.Core.EditorGui
 
             if ( bIsDragging && InMouseState.LeftButton == ButtonState.Pressed )
             {
-                Position = new Vector2( mousePosition.X - m_XDistance, mousePosition.Y - m_YDistance );
+                var newPosition = new Vector2( mousePosition.X - m_XDistance, mousePosition.Y - m_YDistance );
 
-                //var mouseVector = mousePosition - m_prevMousePos;
+                if( newPosition.X < 0 )
+                {
+                    newPosition.X = 0;
+                }
 
-                //if( mouseVector != Vector2.Zero )
-                //{
-                //    mouseVector.Normalize();
+                if( ( newPosition.X + m_Bounds.Width ) > InGraphicsDeviceManager.PreferredBackBufferWidth )
+                {
+                    newPosition.X = InGraphicsDeviceManager.PreferredBackBufferWidth - m_Bounds.Width + 1;
+                }
 
-                //    const float MoveSpeed = 10f;
-                //    Position += mouseVector * MoveSpeed;
-                //}
+                if( newPosition.Y < 0 )
+                {
+                    newPosition.Y = 0;
+                }
+
+                if ( ( newPosition.Y + m_Bounds.Height ) > InGraphicsDeviceManager.PreferredBackBufferHeight )
+                {
+                    newPosition.Y = InGraphicsDeviceManager.PreferredBackBufferHeight - m_Bounds.Height + 1;
+                }
+
+                Position = newPosition;
+
+                return UpdateEvent.Handled;
             }
 
             if ( bIsDragging && InMouseState.LeftButton == ButtonState.Released )
@@ -78,7 +126,7 @@ namespace CyrilGame.Core.EditorGui
                 bIsDragging = false;
             }
 
-            m_prevMousePos = mousePosition;
+            return UpdateEvent.NotHandled;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CyrilGame.Core.EditorGui;
+using CyrilGame.Core.Gui;
 using CyrilGame.Core.Projects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -44,17 +45,20 @@ namespace CyrilGame
 
             m_ballTexture = Content.Load<Texture2D>( @"BallExample\ball" );
 
-            var windowWidth =  300U;
-            var windowHeight = 150U;
+            var windowWidth =  150U;
+            var windowHeight = 75U;
             var middleOfScreen = new Vector2( _graphics.PreferredBackBufferWidth / 2 - windowWidth / 2, _graphics.PreferredBackBufferHeight / 2 - windowHeight / 2 );
 
-            var newPos = new Vector2( 40, 40 );
+            var newPos = new Vector2( _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight );
 
             m_defaultFont.LoadContent( Content );
 
-            var activeWindow = new ActiveWindow( "Brand New Game", middleOfScreen, windowWidth, windowHeight );
+            var activeWindow = new ActiveWindow( "Brand New Project", middleOfScreen, windowWidth, windowHeight );
             activeWindow.Font = m_defaultFont;
-            EditorGuiManager.Instance.AddGui( activeWindow, Content );
+
+            GuiManager.Instance.AddGui( new GuiButton( new Vector2( 40, 40 ), 100, 35 ) { Font = m_defaultFont }, Content );
+            GuiManager.Instance.AddGui( activeWindow, Content );
+           
         }
 
         protected override void Update( GameTime gameTime )
@@ -65,7 +69,7 @@ namespace CyrilGame
 
             // TODO: Add your update logic here
 
-            EditorGuiManager.Instance.Update( gameTime, Mouse.GetState() );
+            GuiManager.Instance.Update( gameTime, Mouse.GetState(), _graphics );
 
             base.Update( gameTime );
         }
@@ -80,7 +84,7 @@ namespace CyrilGame
 
             if ( m_projectCollection.IsBrandNewProject() )
             {
-                EditorGuiManager.Instance.Draw( _spriteBatch );
+                GuiManager.Instance.Draw( _spriteBatch );
             }
             else
             {
