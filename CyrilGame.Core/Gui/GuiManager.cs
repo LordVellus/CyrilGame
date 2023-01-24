@@ -1,13 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CyrilGame.Core.EditorGui;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace CyrilGame.Core.EditorGui
+namespace CyrilGame.Core.Gui
 {
+    public class RendererSpecificItems
+    {
+        public GameTime GameTime;
+        public MouseState MouseState;
+        public GraphicsDeviceManager GraphicsDeviceManager;
+        public SpriteBatch SpriteBatch;
+        public ContentManager Content;
+        public SpriteSheetFont Font;
+    }
+
     public class GuiManager
     {
-        public Stack<GuiBase> Gui { get; set; } = new();
+        public RendererSpecificItems RendererSpecificItems { get; set; } = new();
+        public Stack<GuiGroup> GuiGroups { get; set; } = new();
         private static GuiManager m_instance = new GuiManager();
 
         public static GuiManager Instance
@@ -15,55 +27,42 @@ namespace CyrilGame.Core.EditorGui
             get { return m_instance; }
         }
 
-        public void AddGui( GuiBase InGui, ContentManager InContent )
+        public void AddGui( GuiGroup InGuiGroup )
         {
-            InGui.Init( InContent );
+            InGuiGroup.Init();
 
-            if( Gui.Count() > 0 )
+            if( GuiGroups.Count() > 0 )
             {
-                Gui.Peek().DrawIndex = 1f;
+                GuiGroups.Peek().SetDrawIndex( 1f );
             }
 
-            Gui.Push( InGui );
+            GuiGroups.Push( InGuiGroup );
         }
 
-        public void Draw( SpriteBatch InSpriteBatch )
+        public void Draw()
         {
-            foreach( var gui in Gui.Reverse() )
+            foreach( var gui in GuiGroups )
             {
-                gui.Draw( InSpriteBatch );
+                gui.Draw();
             }
         }
 
-        public void Update( GameTime InGameTime, MouseState InMouseState, GraphicsDeviceManager InGraphicsDeviceManager )
+        public void Update()
         {
-            foreach ( var gui in Gui )
+            foreach ( var gui in GuiGroups )
             {
-               var eventHandled = gui.Update( InGameTime, InMouseState, InGraphicsDeviceManager );
+               var eventHandled = gui.Update();
 
                 if( eventHandled == UpdateEvent.Handled )
                 {
                     break;
                 }
             }
-
-            //var topGui = Gui.Peek();
-
-            //if( topGui != null )
-            //{
-            //    topGui.Update( InGameTime, InMouseState, InGraphicsDeviceManager );
-            //}
         }
-
+        
         private GuiManager()
         {
 
-        }
-
-        public enum UpdateEvent
-        {
-            NotHandled,
-            Handled
         }
     }
 }

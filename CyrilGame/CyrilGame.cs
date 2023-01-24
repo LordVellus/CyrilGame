@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Diagnostics;
 
 namespace CyrilGame
 {
@@ -34,12 +35,17 @@ namespace CyrilGame
             m_ballPosition = new Vector2( _graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2 );
             m_ballSpeed = 100f;
 
+            GuiManager.Instance.RendererSpecificItems.GraphicsDeviceManager = _graphics;
+            GuiManager.Instance.RendererSpecificItems.Content = Content;
+            GuiManager.Instance.RendererSpecificItems.Font = m_defaultFont;
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch( GraphicsDevice );
+            GuiManager.Instance.RendererSpecificItems.SpriteBatch = _spriteBatch;
 
             // TODO: use this.Content to load your game content here
 
@@ -53,23 +59,24 @@ namespace CyrilGame
 
             m_defaultFont.LoadContent( Content );
 
-            var activeWindow = new ActiveWindow( "Brand New Project", middleOfScreen, windowWidth, windowHeight );
-            activeWindow.Font = m_defaultFont;
-
-            GuiManager.Instance.AddGui( new GuiButton( new Vector2( 40, 40 ), 100, 35 ) { Font = m_defaultFont }, Content );
-            GuiManager.Instance.AddGui( activeWindow, Content );
+            var guiGroup = new GuiGroup();
+            guiGroup.AddElement( new ActiveWindow( "A Title", middleOfScreen, windowWidth, windowHeight ) );
            
+            GuiManager.Instance.AddGui( guiGroup );
         }
 
         protected override void Update( GameTime gameTime )
         {
+            GuiManager.Instance.RendererSpecificItems.GameTime = gameTime;
+            GuiManager.Instance.RendererSpecificItems.MouseState = Mouse.GetState();
+
             if ( GamePad.GetState( PlayerIndex.One ).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown( Keys.Escape ) )
                 Exit();
 
 
             // TODO: Add your update logic here
 
-            GuiManager.Instance.Update( gameTime, Mouse.GetState(), _graphics );
+            GuiManager.Instance.Update();
 
             base.Update( gameTime );
         }
@@ -84,7 +91,7 @@ namespace CyrilGame
 
             if ( m_projectCollection.IsBrandNewProject() )
             {
-                GuiManager.Instance.Draw( _spriteBatch );
+                GuiManager.Instance.Draw();
             }
             else
             {

@@ -1,10 +1,10 @@
 ﻿using CyrilGame.Core.Extensions;
+using CyrilGame.Core.Gui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
-using static CyrilGame.Core.EditorGui.GuiManager;
 
 namespace CyrilGame.Core.EditorGui
 {
@@ -53,7 +53,7 @@ namespace CyrilGame.Core.EditorGui
             var headerPadding = new Vector2( 3, 6 );
             var titlePos = Position + headerPadding;
 
-            Font.DrawString( InSpriteBatch, m_Title, m_HeaderStartPos );
+            GuiManager.Instance.RendererSpecificItems.Font.DrawString( InSpriteBatch, m_Title, m_HeaderStartPos );
         }
 
         public override UpdateEvent Update( GameTime InGameTime, MouseState InMouseState, GraphicsDeviceManager InGraphicsDeviceManager )
@@ -90,14 +90,14 @@ namespace CyrilGame.Core.EditorGui
                 m_YDistance =  Vector2.Distance( new Vector2( 0, topLeftRect.Y ), new Vector2( 0, mousePosition.Y ) );
 
                 bIsDragging = true;
-            }
+            } 
 
             if ( bIsDragging && InMouseState.LeftButton == ButtonState.Pressed )
             {
                 var newPosition = new Vector2( mousePosition.X - m_XDistance, mousePosition.Y - m_YDistance );
 
                 if( newPosition.X < 0 )
-                {
+                { 
                     newPosition.X = 0;
                 }
 

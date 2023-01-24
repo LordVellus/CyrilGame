@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Gui\GuiButton.cs~RF2baceb6.TMP" />
+    <None Remove="Gui\GuiManager.cs~RF2bdf868.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Projects\Models\" />
   </ItemGroup>
 

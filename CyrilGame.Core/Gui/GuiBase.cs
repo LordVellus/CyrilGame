@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
-using static CyrilGame.Core.EditorGui.GuiManager;
+using CyrilGame.Core.Gui;
 
 namespace CyrilGame.Core.EditorGui
 {
@@ -81,7 +81,6 @@ public abstract class GuiBase
         public float DrawIndex = 0f;
 
         public Rectangle Bounds { get { return m_Bounds; } }
-        public SpriteSheetFont? Font { get; set; } = null;
 
         public Vector2 Position { get; protected set; }
         public void SetPosition( Vector2 InPosition )
@@ -115,7 +114,6 @@ public abstract class GuiBase
             Debug.Assert( m_texture != null );
             Debug.Assert( m_width >= m_texture.Width );
             Debug.Assert( m_Height >= m_texture.Height );
-            Debug.Assert( Font != null );
 
             var position = Position;
 
@@ -202,69 +200,6 @@ public abstract class GuiBase
 
             m_Bounds.Width = Math.Abs( (int)position.X + bottomRightSlice.Width - m_Bounds.X );
             m_Bounds.Height = Math.Abs( (int)position.Y + bottomRightSlice.Height - m_Bounds.Y );
-
-            ////if ( m_width > m_texture.Width )
-            //{
-            //    //InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, topMiddleSlice.Width, topMiddleSlice.Height ), topMiddleSlice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
-
-            //    var remainingPixels = m_width - ( uint ) topLeftSlice.Width - ( uint ) topRightSlice.Width;
-            //    var numberOfPanelsNeeded = remainingPixels / ( uint ) topMiddleSlice.Width;
-
-            //    if( ( numberOfPanelsNeeded * topMiddleSlice.Width ) < remainingPixels )
-            //    {
-            //        numberOfPanelsNeeded++;
-            //    }
-
-            //    if( numberOfPanelsNeeded < 1 ) 
-            //    {
-            //        numberOfPanelsNeeded = 1;
-            //    }
-
-            //   //position.X += topMiddleSlice.Width;
-
-            //    for (uint i = 0; i < numberOfPanelsNeeded; i++)
-            //    {
-            //        var nextSliceWidth = remainingPixels >= ( uint ) topMiddleSlice.Width  ? ( uint ) topMiddleSlice.Width  : remainingPixels;
-
-
-            //        var sourceRectangle = topMiddleSlice;
-            //        sourceRectangle.Width = ( int ) nextSliceWidth;
-            //        InSpriteBatch.Draw( m_texture, new Rectangle( ( int ) position.X, ( int ) position.Y, ( int ) nextSliceWidth, topMiddleSlice.Height ), sourceRectangle, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
-
-            //        position.X += nextSliceWidth;
-
-            //        remainingPixels -= nextSliceWidth;
-            //    }
-            //}
-
-
-            //foreach ( var slicePart in Slices )
-            //{
-            //    var position = Position;
-            //    var slicePosition = new Vector2( slice.X, slice.Y );
-            //    var uiPosition = position + slicePosition;
-            //    if ( slicePart.Key == SlicePart.TopLeft )
-            //    {
-            //    }
-
-
-            //    var positionX = Position.X;
-
-            //    if( IsASlicePartMiddle( slicePart.Key ) && m_width > m_texture.Width )
-            //    {
-            //        var 
-            //    }
-
-            //    position.X = positionX;
-
-            //    var slice = slicePart.Value;
-
-            //    var slicePosition = new Vector2( slice.X, slice.Y );
-
-            //    var uiPosition = position + slicePosition;
-
-            //    //InSpriteBatch.Draw( m_texture, new Rectangle((int)uiPosition.X, (int)uiPosition.Y, slice.Width, slice.Height), slice, Color.White, 0f, Vector2.One, SpriteEffects.None, 1f );
-            //}
         }
 
         private void Draw( SpriteBatch InSpriteBatch, ref Vector2 InPosition, Rectangle InSlice, uint InHeight = 0 )
