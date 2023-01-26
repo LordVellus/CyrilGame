@@ -63,7 +63,7 @@ namespace CyrilGame.Core.EditorGui
         {
             m_Texture = AssetSystem.Instance.GetImageAsset( @"editor\fonts\font" );
 
-            var fontDef = AssetSystem.Instance.GetTextAsset( @"editor\fonts\fontdef.txt" );
+            var fontDef = AssetSystem.Instance.GetTextAsset( @"editor\fonts\fontdef" );
 
             var lines = fontDef.Split( Environment.NewLine );
 
