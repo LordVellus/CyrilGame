@@ -69,9 +69,7 @@ namespace CyrilGame.Core.EditorGui
 
             foreach(var line in lines ) 
             {
-                var splitLine = line.Split( "[SEP]" );
-
-                m_FontDef.Add( splitLine[ 0 ], int.Parse( splitLine[ 1 ] ) );
+                m_FontDef.Add( line[ 0 ].ToString(), int.Parse( splitLine[ 1 ] ) );
             }
         }
 
