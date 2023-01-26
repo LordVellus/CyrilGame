@@ -35,8 +35,8 @@
     <None Remove="Assets\editor\gui\Window_Header_Inactive.png" />
     <None Remove="Assets\editor\gui\Window_Header_Resizable.png" />
     <None Remove="Assets\editor\gui\Window_Header_Resizable_Inactive.png" />
-    <None Remove="Assets\fonts\font.png" />
-    <None Remove="Assets\fonts\fontdef.txt" />
+    <None Remove="Assets\editor\fonts\font.png" />
+    <None Remove="Assets\editor\fonts\fontdef.txt" />
     <None Remove="Gui\GuiButton.cs~RF2baceb6.TMP" />
     <None Remove="Gui\GuiManager.cs~RF2bdf868.TMP" />
   </ItemGroup>
@@ -126,10 +126,10 @@
     <Content Include="Assets\editor\gui\Window_Header_Resizable_Inactive.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\fonts\font.png">
+    <Content Include="Assets\editor\fonts\font.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\fonts\fontdef.txt">
+    <Content Include="Assets\editor\fonts\fontdef.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
