@@ -69,7 +69,7 @@ namespace CyrilGame.Core.EditorGui
 
             foreach(var line in lines ) 
             {
-                m_FontDef.Add( line[ 0 ].ToString(), int.Parse( line[ 1 ].ToString() ) );
+                m_FontDef.Add( line[ 0 ].ToString(), int.Parse( line[ 2 ].ToString() ) );
             }
         }
 
