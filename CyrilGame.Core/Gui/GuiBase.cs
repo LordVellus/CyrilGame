@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using CyrilGame.Core.Gui;
+using CyrilGame.Core.Systems;
 
 namespace CyrilGame.Core.EditorGui
 {
@@ -60,9 +61,9 @@ namespace CyrilGame.Core.EditorGui
 
         public override void LoadContent( ContentManager InContent )
         {
-            m_Texture = InContent.Load<Texture2D>( @"fonts\font" );
+            m_Texture = AssetSystem.Instance.GetImageAsset( @"editor\fonts\font" );
 
-            var fontDef = File.ReadAllText( @"Config\fontdef.txt" );
+            var fontDef = AssetSystem.Instance.GetTextAsset( @"editor\fonts\fontdef.txt" );
 
             var lines = fontDef.Split( Environment.NewLine );
 

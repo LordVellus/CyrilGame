@@ -1,6 +1,6 @@
-﻿using CyrilGame.Core.Assets;
-using CyrilGame.Core.Extensions;
+﻿using CyrilGame.Core.Extensions;
 using CyrilGame.Core.Gui;
+using CyrilGame.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,10 +24,10 @@ namespace CyrilGame.Core.EditorGui
 
         public override void Init( ContentManager InContent )
         {
-            m_texture = AssetManager.Instance.GetAsset( @"editor\gui\Window_Header" );// InContent.Load< Texture2D >( @"editor\gui\Window_Header" );
+            m_texture = AssetSystem.Instance.GetImageAsset( @"editor\gui\Window_Header" );// InContent.Load< Texture2D >( @"editor\gui\Window_Header" );
             m_DefaultTexture = m_texture;
 
-            m_InactiveTexture = AssetManager.Instance.GetAsset( @"editor\gui\Window_Header_Inactive" );
+            m_InactiveTexture = AssetSystem.Instance.GetImageAsset( @"editor\gui\Window_Header_Inactive" );
 
             Slices.Add( SlicePart.TopLeft, new Rectangle( 0, 0, 16, 32 ) );
             Slices.Add( SlicePart.TopMiddle, new Rectangle( 16, 0, 16, 32 ) );
