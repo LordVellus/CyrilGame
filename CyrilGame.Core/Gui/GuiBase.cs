@@ -69,6 +69,11 @@ namespace CyrilGame.Core.EditorGui
 
             foreach(var line in lines ) 
             {
+                if( line.Length != 3 )
+                {
+                    continue;
+                }
+
                 m_FontDef.Add( line[ 0 ].ToString(), int.Parse( line[ 2 ].ToString() ) );
             }
         }
