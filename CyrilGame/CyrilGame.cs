@@ -1,4 +1,5 @@
-﻿using CyrilGame.Core.EditorGui;
+﻿using CyrilGame.Core.Assets;
+using CyrilGame.Core.EditorGui;
 using CyrilGame.Core.Gui;
 using CyrilGame.Core.Projects;
 using Microsoft.Xna.Framework;
@@ -38,6 +39,8 @@ namespace CyrilGame
             GuiManager.Instance.RendererSpecificItems.GraphicsDeviceManager = _graphics;
             GuiManager.Instance.RendererSpecificItems.Content = Content;
             GuiManager.Instance.RendererSpecificItems.Font = m_defaultFont;
+
+            AssetManager.Instance.LoadAllAssets();
 
             base.Initialize();
         }
