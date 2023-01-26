@@ -12,6 +12,8 @@ namespace CyrilGame
 {
     public class CyrilGame : Game
     {
+        //  WIll I see this update in a submodule?
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private ProjectCollection m_projectCollection = new ProjectCollection();
