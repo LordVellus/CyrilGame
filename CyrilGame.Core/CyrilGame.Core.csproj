@@ -7,8 +7,123 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\editor\gui\Windows_Button.png" />
+    <None Remove="Assets\editor\gui\Windows_Button_Focus.png" />
+    <None Remove="Assets\editor\gui\Windows_Button_Focus_Outlined.png" />
+    <None Remove="Assets\editor\gui\Windows_Button_Inactive.png" />
+    <None Remove="Assets\editor\gui\Windows_Button_Pressed.png" />
+    <None Remove="Assets\editor\gui\Windows_Button_Pressed_Outlined.png" />
+    <None Remove="Assets\editor\gui\Windows_Divider_Line.png" />
+    <None Remove="Assets\editor\gui\Windows_Example_ItchPic.png" />
+    <None Remove="Assets\editor\gui\Windows_Example_Main.png" />
+    <None Remove="Assets\editor\gui\Windows_Example_Popup.png" />
+    <None Remove="Assets\editor\gui\Windows_Icons.png" />
+    <None Remove="Assets\editor\gui\Windows_Inner_Frame.png" />
+    <None Remove="Assets\editor\gui\Windows_Inner_Frame_Inverted.png" />
+    <None Remove="Assets\editor\gui\Windows_Progress_Fill.png" />
+    <None Remove="Assets\editor\gui\Windows_Ratio.png" />
+    <None Remove="Assets\editor\gui\Windows_Ratio_Inactive.png" />
+    <None Remove="Assets\editor\gui\Windows_Ratio_Selected.png" />
+    <None Remove="Assets\editor\gui\Windows_SideBar_Underside.png" />
+    <None Remove="Assets\editor\gui\Windows_Slider_Background.png" />
+    <None Remove="Assets\editor\gui\Windows_Slider_Handle.png" />
+    <None Remove="Assets\editor\gui\Windows_Toggle_Active.png" />
+    <None Remove="Assets\editor\gui\Windows_Toggle_Inactive.png" />
+    <None Remove="Assets\editor\gui\Windows_Toggle_Selected.png" />
+    <None Remove="Assets\editor\gui\Window_Base.png" />
+    <None Remove="Assets\editor\gui\Window_Header.png" />
+    <None Remove="Assets\editor\gui\Window_Header_Inactive.png" />
+    <None Remove="Assets\editor\gui\Window_Header_Resizable.png" />
+    <None Remove="Assets\editor\gui\Window_Header_Resizable_Inactive.png" />
     <None Remove="Gui\GuiButton.cs~RF2baceb6.TMP" />
     <None Remove="Gui\GuiManager.cs~RF2bdf868.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\editor\gui\Windows_Button.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Button_Focus.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Button_Focus_Outlined.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Button_Inactive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Button_Pressed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Button_Pressed_Outlined.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Divider_Line.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Example_ItchPic.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Example_Main.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Example_Popup.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Icons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Inner_Frame.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Inner_Frame_Inverted.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Progress_Fill.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Ratio.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Ratio_Inactive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Ratio_Selected.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_SideBar_Underside.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Slider_Background.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Slider_Handle.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Toggle_Active.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Toggle_Inactive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Windows_Toggle_Selected.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Window_Base.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Window_Header.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Window_Header_Inactive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Window_Header_Resizable.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\editor\gui\Window_Header_Resizable_Inactive.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

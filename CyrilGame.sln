@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyrilGame", "CyrilGame\CyrilGame.csproj", "{C010E679-03CA-4359-9E7E-73B018A53823}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CyrilGame.Core", "CyrilGame.Core\CyrilGame.Core.csproj", "{FDADBA8A-7BFE-4A39-9577-0694B52AC0E8}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C010E679-03CA-4359-9E7E-73B018A53823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C010E679-03CA-4359-9E7E-73B018A53823}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C010E679-03CA-4359-9E7E-73B018A53823}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C010E679-03CA-4359-9E7E-73B018A53823}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FDADBA8A-7BFE-4A39-9577-0694B52AC0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FDADBA8A-7BFE-4A39-9577-0694B52AC0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDADBA8A-7BFE-4A39-9577-0694B52AC0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
