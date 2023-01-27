@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace CyrilGame
+namespace CyrilGame.Core
 {
     public class CyrilGame : Game
     {
@@ -16,7 +16,7 @@ namespace CyrilGame
         public CyrilGame()
         {
             _graphics = new GraphicsDeviceManager( this );
-            _graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = false;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
