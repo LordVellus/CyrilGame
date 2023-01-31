@@ -11,14 +11,30 @@ namespace CyrilGame.Core
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        DefaultFont m_defaultFont = new DefaultFont();
+        protected DefaultFont m_defaultFont = new DefaultFont();
+
+        private bool m_bActivateEditor = false;
+
+        public enum CyrilKeyState
+        {
+            None,
+            KeyDown,
+            Pressed,
+            Held
+        }
+
+        private Dictionary<Keys, CyrilKeyState> m_KeyStates = new Dictionary<Keys, CyrilKeyState>();
 
         public CyrilGame()
         {
             _graphics = new GraphicsDeviceManager( this );
             _graphics.IsFullScreen = false;
-            Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            foreach(var key in (Keys[])Enum.GetValues( typeof( Keys ) ) )
+            {
+                m_KeyStates.Add( key, CyrilKeyState.None );
+            }
         }
 
         protected override void Initialize()
@@ -30,6 +46,13 @@ namespace CyrilGame.Core
             GuiManager.Instance.RendererSpecificItems.Font = m_defaultFont;
 
             AssetSystem.Instance.LoadAllAssets();
+
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            _graphics.IsFullScreen = true;
+
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -49,7 +72,7 @@ namespace CyrilGame.Core
 
             m_defaultFont.LoadContent( Content );
 
-            var guiGroup = new GuiGroup();
+            var guiGroup = new GuiGroup( true );
             guiGroup.AddElement( new ActiveWindow( "A Title", middleOfScreen, windowWidth, windowHeight ) );
            
             GuiManager.Instance.AddGui( guiGroup );
@@ -60,9 +83,42 @@ namespace CyrilGame.Core
             GuiManager.Instance.RendererSpecificItems.GameTime = gameTime;
             GuiManager.Instance.RendererSpecificItems.MouseState = Mouse.GetState();
 
+            foreach ( var ks in m_KeyStates )
+            {
+                var key = ks.Key;
+                if( Keyboard.GetState().IsKeyDown( ks.Key ) )
+                {
+                    switch( ks.Value )
+                    {
+                        case CyrilKeyState.None:
+                            m_KeyStates[ key ] = CyrilKeyState.KeyDown;
+                            break;
+                        case CyrilKeyState.KeyDown:
+                            m_KeyStates[ key ] = CyrilKeyState.Held;
+                            break;
+                    }
+                }
+                else if( Keyboard.GetState().IsKeyUp( key ) )
+                {
+                    switch( ks.Value )
+                    {
+                        case CyrilKeyState.KeyDown:
+                            m_KeyStates[ key ] = CyrilKeyState.Pressed;
+                            break;
+                        case CyrilKeyState.Pressed:
+                            m_KeyStates[ key ] = CyrilKeyState.None;
+                            break;
+                    }
+                }
+            }
+
             if ( GamePad.GetState( PlayerIndex.One ).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown( Keys.Escape ) )
                 Exit();
 
+            if( m_KeyStates[ Keys.LeftShift ] == CyrilKeyState.Held && m_KeyStates[ Keys.E ] == CyrilKeyState.Pressed )
+            {
+                m_bActivateEditor = !m_bActivateEditor;
+            }
 
             // TODO: Add your update logic here
 
@@ -77,7 +133,7 @@ namespace CyrilGame.Core
             
             _spriteBatch.Begin();
 
-            GuiManager.Instance.Draw();
+            GuiManager.Instance.Draw( m_bActivateEditor );
 
             // TODO: Add your drawing code here
             _spriteBatch.End();

@@ -39,11 +39,11 @@ namespace CyrilGame.Core.Gui
             GuiGroups.Push( InGuiGroup );
         }
 
-        public void Draw()
+        public void Draw( bool bInActivateEditor )
         {
             foreach( var gui in GuiGroups )
             {
-                gui.Draw();
+                gui.Draw( bInActivateEditor );
             }
         }
 

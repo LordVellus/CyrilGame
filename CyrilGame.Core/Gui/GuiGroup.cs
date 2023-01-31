@@ -6,6 +6,14 @@ namespace CyrilGame.Core.Gui
     {
         public Stack< GuiBase > Elements { get; set; } = new();
 
+        private bool m_bIsEditor = false;
+
+        public GuiGroup( bool bIsEditor )
+        {
+            m_bIsEditor= bIsEditor;
+        }
+
+
         public void AddElement ( GuiBase InElement )
         {
             Elements.Push( InElement );
@@ -27,8 +35,13 @@ namespace CyrilGame.Core.Gui
             }
         }
 
-        public void Draw()
+        public void Draw( bool bInActivatedEditor = false )
         {
+            if( !bInActivatedEditor && m_bIsEditor )
+            {
+                return;
+            }
+
             foreach(var element in Elements) 
             {
                 element.Draw( GuiManager.Instance.RendererSpecificItems.SpriteBatch );
