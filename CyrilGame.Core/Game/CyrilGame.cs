@@ -28,7 +28,6 @@ namespace CyrilGame.Core
         public CyrilGame()
         {
             _graphics = new GraphicsDeviceManager( this );
-            _graphics.IsFullScreen = false;
             IsMouseVisible = true;
 
             foreach(var key in (Keys[])Enum.GetValues( typeof( Keys ) ) )
@@ -47,10 +46,13 @@ namespace CyrilGame.Core
 
             AssetSystem.Instance.LoadAllAssets();
 
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
 
-            _graphics.IsFullScreen = true;
+            //_graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            //_graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            _graphics.IsFullScreen = false;
 
             _graphics.ApplyChanges();
 
@@ -86,7 +88,7 @@ namespace CyrilGame.Core
             foreach ( var ks in m_KeyStates )
             {
                 var key = ks.Key;
-                if( Keyboard.GetState().IsKeyDown( ks.Key ) )
+                if( Keyboard.GetState().IsKeyDown( ks.Key ) && ( m_KeyStates[ key ] == CyrilKeyState.None || m_KeyStates[ key ] == CyrilKeyState.KeyDown ) )
                 {
                     switch( ks.Value )
                     {
@@ -98,10 +100,11 @@ namespace CyrilGame.Core
                             break;
                     }
                 }
-                else if( Keyboard.GetState().IsKeyUp( key ) )
+                else if( Keyboard.GetState().IsKeyUp( key ) && m_KeyStates[ key ] != CyrilKeyState.None )
                 {
                     switch( ks.Value )
                     {
+                        case CyrilKeyState.Held:
                         case CyrilKeyState.KeyDown:
                             m_KeyStates[ key ] = CyrilKeyState.Pressed;
                             break;
